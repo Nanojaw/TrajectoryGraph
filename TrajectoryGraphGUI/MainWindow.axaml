@@ -2,8 +2,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="675"
         x:Class="TrajectoryGraphGUI.MainWindow"
-        Title="TrajectoryGraph">
-    <TextBlock FontSize="100"> Gello, World! </TextBlock>
+        Title="TrajectoryGraph"
+        Width="1200"
+        Height="675">
+    <StackPanel>
+        <Canvas Width="800" Height="600" Background="#000000">
+            <Polyline Name="Graph1"></Polyline>
+        </Canvas>
+        <Button Click="OnAdd">Add</Button>
+    </StackPanel>
 </Window>
