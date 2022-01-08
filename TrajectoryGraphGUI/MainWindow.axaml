@@ -6,11 +6,30 @@
         x:Class="TrajectoryGraphGUI.MainWindow"
         Title="TrajectoryGraph"
         Width="1200"
-        Height="675">
+        Height="675"
+        PropertyChanged="AvaloniaObject_OnPropertyChanged">
     <StackPanel>
-        <Canvas Width="800" Height="600" Background="#000000">
-            <Polyline Name="Graph1"></Polyline>
+        <Canvas Name="Canvas" 
+                Width="810" 
+                Height="610" 
+                Background="#000000"
+                >
+            <Line Name="XLine" 
+                  Stroke="#FFFFFF"
+                  StartPoint="0 605"
+                  EndPoint="810 605"></Line>
+            <Line Name="YLine" 
+                  Stroke="#FFFFFF"
+                  StartPoint="5 0"
+                  EndPoint="5 610"></Line>
+            <Polyline Name="Graph1" 
+                      Stroke="#FFFFFF"></Polyline>
         </Canvas>
-        <Button Click="OnAdd">Add</Button>
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+            <Button Click="ScrollLeft_OnClick">←</Button>
+            <TextBox Name="ScrollStep">100</TextBox>
+            <Button Click="ScrollRight_OnClick">→</Button>
+        </StackPanel>
     </StackPanel>
 </Window>
