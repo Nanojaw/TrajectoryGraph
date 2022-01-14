@@ -63,14 +63,17 @@ namespace TrajectoryGraphGUI
         {
             AvaloniaXamlLoader.Load(this);
 
+            var grid = this.FindControl<Polyline>("Grid");
+            grid.Stroke = new SolidColorBrush(new Color(127, 200, 200, 200));
+            grid.Points = GridPoints(1010, 610, 50, 5, 5);
+            
             var graph = this.FindControl<Polyline>("Graph1");
-
             graph.Points = new List<Point>(GetPoints(1000, 5, 45, 0));
         }
 
-        void Add(double x, double y)
+        void Add(double x, double y, string name)
         {
-            var graph = this.FindControl<Polyline>("Graph1");
+            var graph = this.FindControl<Polyline>(name);
 
             var points = new List<Point>(graph.Points);
 
@@ -87,6 +90,44 @@ namespace TrajectoryGraphGUI
             const double g = 9.818060721453536;
 
             return velocity * Math.Cos(angle_of_attack * (Math.PI / 180)) * (velocity * Math.Sin(angle_of_attack * (Math.PI / 180)) + Math.Sqrt(Math.Pow(velocity * Math.Sin(angle_of_attack * (Math.PI / 180)), 2) + 2 * g * initial_height)) / g;
+        }
+
+        private IList<Point> GridPoints(double width, double height, int size, double xOffset, double yOffset)
+        {
+            var points = new List<Point>();
+
+            for (var i = 0; i < Math.Ceiling(width / size); i++)
+            {
+                if (i % 2 == 0)
+                {
+                    points.Add(new Point(i * size + xOffset, 0));
+                    points.Add(new Point(i * size + xOffset, height));
+                }
+                else
+                {
+                    points.Add(new Point(i * size + xOffset, height));
+                    points.Add(new Point(i * size + xOffset, 0));
+                }
+            }
+
+            if (Math.Ceiling(width / size) % 2 == 0) points.Add(new Point(width, 0));
+            points.Add(new Point(width, height));
+            
+             for (var i = 0; i < Math.Ceiling(height / size); i++)
+             {
+                 if (i % 2 == 0)
+                 {
+                     points.Add(new Point(width, i * size + yOffset));
+                     points.Add(new Point(0, i * size + yOffset));
+                 }
+                 else
+                 {
+                     points.Add(new Point(0, i * size + yOffset));
+                     points.Add(new Point(width, i * size + yOffset));
+                 }
+             }
+
+            return points;
         }
 
         private unsafe Point[] GetPoints(int num_points, double velocity, double angle_of_attack, double initial_height)
@@ -121,13 +162,12 @@ namespace TrajectoryGraphGUI
             
             var win = (Window)sender;
             Canvas canvas;
-            Line xLine;
-            Line yLine;
+            Polyline grid;
+            
             try
             {
-                canvas = win.GetVisualDescendants().OfType<Canvas>().First();
-                xLine = this.FindControl<Line>("XLine");
-                yLine = this.FindControl<Line>("YLine");
+                canvas = win.FindControl<Canvas>("Canvas");
+                grid = win.FindControl<Polyline>("Grid");
             }
             catch (InvalidOperationException exception) { return; }
             
@@ -136,16 +176,16 @@ namespace TrajectoryGraphGUI
                 case "Width":
                 {
                     canvas.Width = canvas.Width + (double)e.NewValue - (double)e.OldValue;
-                    xLine.EndPoint = xLine.EndPoint.WithX(canvas.Width);
+
+                    grid.Points = GridPoints(canvas.Width, canvas.Height, 50, 5, canvas.Height % 50 - 5);
                     break;
                 }
                 case "Height":
                 {
                     canvas.Height = canvas.Height + (double)e.NewValue - (double)e.OldValue;
-                    Add(0, ((double)e.NewValue - (double)e.OldValue));
-                    xLine.StartPoint = xLine.StartPoint.WithY(canvas.Height - 5);
-                    xLine.EndPoint = xLine.EndPoint.WithY(canvas.Height - 5);
-                    yLine.EndPoint = yLine.EndPoint.WithY(canvas.Height);
+                    Add(0, (double)e.NewValue - (double)e.OldValue, "Graph1");
+                    
+                    grid.Points = GridPoints(canvas.Width, canvas.Height, 50, 5, canvas.Height % 50 - 5);
                     break;
                 }
             }
@@ -155,13 +195,13 @@ namespace TrajectoryGraphGUI
         {
             var step = int.Parse(this.FindControl<TextBox>("ScrollStep").Text);
 
-            Add(step, 0);
+            Add(step, 0, "Graph1");
         }
         private void ScrollRight_OnClick(object? sender, RoutedEventArgs e)
         {
             var step = int.Parse(this.FindControl<TextBox>("ScrollStep").Text);
 
-            Add(step * -1, 0);
+            Add(step * -1, 0, "Graph1");
         }
     }
 }

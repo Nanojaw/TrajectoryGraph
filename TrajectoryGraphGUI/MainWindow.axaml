@@ -10,25 +10,19 @@
         PropertyChanged="AvaloniaObject_OnPropertyChanged">
     <StackPanel>
         <Canvas Name="Canvas" 
-                Width="810" 
+                Width="1010" 
                 Height="610" 
                 Background="#000000"
                 >
-            <Line Name="XLine" 
-                  Stroke="#FFFFFF"
-                  StartPoint="0 605"
-                  EndPoint="810 605"></Line>
-            <Line Name="YLine" 
-                  Stroke="#FFFFFF"
-                  StartPoint="5 0"
-                  EndPoint="5 610"></Line>
             <Polyline Name="Graph1" 
                       Stroke="#FFFFFF"></Polyline>
+            <Polyline Name="Grid" 
+                      Stroke="#F0F0F0" ></Polyline>
         </Canvas>
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Center">
             <Button Click="ScrollLeft_OnClick">←</Button>
-            <TextBox Name="ScrollStep">100</TextBox>
+            <TextBox Name="ScrollStep">50</TextBox>
             <Button Click="ScrollRight_OnClick">→</Button>
         </StackPanel>
     </StackPanel>
